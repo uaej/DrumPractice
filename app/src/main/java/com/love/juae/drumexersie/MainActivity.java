@@ -18,8 +18,11 @@ public class MainActivity extends AppCompatActivity {
     TextView tv_speed;
     Button btn_up, btn_down;
     int bpm = 60, second = 1000;
-    //(BPM / 기준 BPM) * (Tempo / 기준 Temp), 이 식으로 얻은 값은 BPM을 박자로 나눈 초 값이며,
-    // 제작하는 프로그램에서는 값 만큼 초를 움직여주면 된다. 대개 기준 BPM은 60을 잡는 것이 편하다. 60BPM, 4/4박자 = 1초
+    //1bmp은
+    // (BPM / 기준 BPM) * (Tempo / 기준 Temp), 이 식으로 얻은 값은 BPM을 박자로 나눈 초 값이며,
+    // 제작하는 프로그램에서는 값 만큼 초를 움직여주면 된다. 대개 기준 BPM은 60을 잡는 것이 편하다. 60BPM, 4/4박자 음표 한개가 1초.
+    //
+
     private TimerTask mTask;
     private Timer mTimer;
     private int note = 4;
@@ -111,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 task_num += 1;
             }
         };
-        mTimer.schedule(mTask, 0, second);
+
+        for(int i =0; i<note; i++){
+            bitlist.get(i).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
+        mTimer.schedule(mTask, 5, second);
     }
 }
