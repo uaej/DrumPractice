@@ -1,6 +1,8 @@
 package com.love.juae.drumexersie;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,13 +17,19 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<View> bitlist = new ArrayList<>();
-    TextView tv_speed;
-    Button btn_up, btn_down;
-    int bpm = 60, second = 1000;
+    TextView tv_speed, tv_rawspeed;
+    Button btn_up, btn_down, btn_start;
+    //final Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+
+    int bpm = 60, msecond = 60000;
+    private String TAG = "MAIN_ACTIVITY";
     //1bmp은
     // (BPM / 기준 BPM) * (Tempo / 기준 Temp), 이 식으로 얻은 값은 BPM을 박자로 나눈 초 값이며,
     // 제작하는 프로그램에서는 값 만큼 초를 움직여주면 된다. 대개 기준 BPM은 60을 잡는 것이 편하다. 60BPM, 4/4박자 음표 한개가 1초.
-    //
+
+    // BPM = 60000(ms) / 1비트의 시간(ms)
+    //1비트의 시간 (ms) = 60000 /bpm
+
 
     private TimerTask mTask;
     private Timer mTimer;
@@ -29,10 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private int task_num = 0;
     private ArrayList<View> view_list = new ArrayList<>();
     private boolean timer_start = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         bitlist.add((View) findViewById(R.id.bit_1));
         bitlist.add((View) findViewById(R.id.bit_2));
         bitlist.add((View) findViewById(R.id.bit_3));
@@ -41,16 +51,21 @@ public class MainActivity extends AppCompatActivity {
         tv_speed = (TextView) findViewById(R.id.tv_speed);
         btn_up = (Button) findViewById(R.id.btn_up);
         btn_down = (Button) findViewById(R.id.btn_down);
+        btn_start = (Button) findViewById(R.id.btn_start);
+         tv_rawspeed = (TextView) findViewById(R.id.tv_rawspeed);
+
         btn_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bpm += 5;
-                second -= 83.33;
+                bpm += 1;
+                msecond = 60000 / bpm;
+                Log.e(TAG, "second : " + msecond);
                 tv_speed.setText(String.valueOf(bpm));
+          //      tv_rawspeed.setText(String.valueOf(msecond));
                 mTimer = new Timer();
-                if(timer_start) {
+                if (timer_start) {
                     mTask.cancel();
-                }else{
+                } else {
                     timer_start = true;
                 }
                 start_newtask();
@@ -60,20 +75,22 @@ public class MainActivity extends AppCompatActivity {
         btn_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bpm > 5) {
-                    bpm -= 5;
-                    second += 83.33;
+                if (bpm > 1) {
+                    bpm -= 1;
+                    msecond = 60000 / bpm;
                     tv_speed.setText(String.valueOf(bpm));
+            //        tv_rawspeed.setText(String.valueOf(tv_rawspeed));
                     mTimer = new Timer();
-                    if(timer_start) {
+                    if (timer_start) {
                         mTask.cancel();
-                    }else{
+                    } else {
                         timer_start = true;
                     }
                     start_newtask();
                 }
             }
         });
+
 
    /*     new Thread(new Runnable() {
             @Override
@@ -112,12 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 bitlist.get(bef_num).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 bitlist.get(task_num).setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 task_num += 1;
+           //     vibrator.vibrate(200);
             }
         };
 
-        for(int i =0; i<note; i++){
+        for (int i = 0; i < note; i++) {
             bitlist.get(i).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
-        mTimer.schedule(mTask, 5, second);
+        mTimer.schedule(mTask, 5, msecond); // 인자값(timer, 시작전딜레이, 몇초마다 실행)
     }
 }
