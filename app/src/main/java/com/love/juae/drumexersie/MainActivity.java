@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 if (task_num == note) {
                     task_num = 0;
-
                 }
                 Log.e("", "task_num : " + task_num);
                 int bef_num;

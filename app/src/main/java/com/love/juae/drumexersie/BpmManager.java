@@ -34,7 +34,7 @@ public class BpmManager {
             bpm -= 1;
             msecond = 60000 / bpm;
         }
-    }   
+    }
     public void stop_bpm() {
 
     }
