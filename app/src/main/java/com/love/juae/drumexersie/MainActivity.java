@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 */
     }
 
+
     private void start_newtask() {
         task_num = 0;
         mTask = new TimerTask() {
